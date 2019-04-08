@@ -1,86 +1,68 @@
 package GUI;
 import javax.swing.*;
 
-import java.awt.Button;
-import java.awt.Dialog;
-import java.awt.FlowLayout;
 import java.awt.event.*;
 import Run.*;
 
 public class login {
+
     public login(User U){
-    	JFrame f = new JFrame("µÇÂ¼");
-        JPasswordField value = new JPasswordField();
-        value.setBounds(100, 75, 100, 30);
+ 
+    	JFrame login = new JFrame("ç™»å½•");
+    	login.setSize(300, 300);
+    	login.setLocationRelativeTo(null);
+        login.setLayout(null);
+        login.setResizable(false);
+        login.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         
-        JLabel l1 = new JLabel("ÕËºÅ:");
-        l1.setBounds(20, 20, 80, 30);
-        JTextField text = new JTextField();
-        text.setBounds(100, 20, 100, 30);
+        JLabel ID = new JLabel("è´¦å·:");
+        ID.setBounds(20, 20, 80, 30);
         
-        JLabel l2 = new JLabel("ÃÜÂë:");
-        l2.setBounds(20, 75, 80, 30);
-        JButton b = new JButton("µÇÂ¼");
-        b.setBounds(60, 120, 80, 30);
-        JButton c = new JButton("×¢²á");
-        c.setBounds(160, 120, 80, 30);
+        JTextField ID_value = new JTextField();
+        ID_value.setBounds(100, 20, 100, 30);
+        JLabel psw = new JLabel("å¯†ç :");
         
-        Dialog  d = new Dialog(f, "´íÎó", true);//µ¯³öµÄ¶Ô»°¿ò
-        d.setBounds(400, 200, 350, 150);//ÉèÖÃµ¯³ö¶Ô»°¿òµÄÎ»ÖÃºÍ´óĞ¡
-        d.setLayout(new FlowLayout());//ÉèÖÃµ¯³ö¶Ô»°¿òµÄ²¼¾ÖÎªÁ÷Ê½²¼¾Ö
-        JLabel l3 = new JLabel();//´´½¨lab±êÇ©ÌîĞ´ÌáÊ¾ÄÚÈİ
-        Button ok = new Button("È·¶¨");
-        d.setLocationRelativeTo(null);//ÏÔÊ¾ÆÁÄ»ÖĞÑë
-        d.setResizable(true);
-        d.add(l3);
-        d.add(ok);
+        psw.setBounds(20, 75, 80, 30);
+    	JPasswordField psw_value = new JPasswordField();
+        psw_value.setBounds(100, 75, 100, 30);
+        
+        JButton login_but = new JButton("ç™»å½•");
+        login_but.setBounds(100, 120, 100, 50);
+        JButton register_but = new JButton("æ³¨å†Œ");
+        register_but.setBounds(160, 180, 70, 30);
        
-        f.add(value);
-        f.add(l1);
-        f.add(l2);
-        f.add(b);
-        f.add(c);
-        f.add(text);
-        f.setSize(300, 300);
-        f.setLocationRelativeTo(null);//ÏÔÊ¾ÆÁÄ»ÖĞÑë
-        f.setLayout(null);
-        f.setVisible(true);
-        //µÇÂ¼°´Å¥
-        b.addActionListener(new ActionListener() {
+        login.add(psw_value);
+        login.add(ID);
+        login.add(psw);
+        login.add(login_but);
+        login.add(register_but);
+        login.add(ID_value);
+        
+        
+        login.setVisible(true);
+        
+        //ç™»å½•æŒ‰é’®
+        login_but.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                String ID =text.getText();
-                String psw=new String(value.getPassword());
-                U.setUser(ID, psw);
-                String Info=U.Login();
-//                System.out.println(Info);
+                String ID =ID_value.getText();
+                String psw=new String(psw_value.getPassword());
+                String Info=U.Login(ID,psw);
                 if(Info.equals("true")) {
-                	System.out.println("³É¹¦");
+                	new blog_view(U);
+                	login.dispose();
                 }
                 else {
-                	l3.setText(Info);
-                	d.setVisible(true);
+                	new JOptionPane().showMessageDialog(null, Info, "è­¦å‘Š", JOptionPane.WARNING_MESSAGE);
                 	return;
                 }
             }
         });
-        c.addActionListener(new ActionListener() {
+        //æ³¨å†ŒæŒ‰é’®ç›‘å¬å™¨
+        register_but.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-               new register(new User());
+               new register(U);
+               login.dispose();
             }
         });
-        
-        // È·¶¨°´Å¥¼àÌıÆ÷
-        ok.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                d.setVisible(false);
-            }
-        });
-        //ÍË³ö
-        d.addWindowListener(new WindowAdapter() {
-            public void windowClosing(WindowEvent e) {
-                d.setVisible(false);//ÉèÖÃ¶Ô»°¿ò²»¿É¼û
-       
-            }});
-
     }
 }

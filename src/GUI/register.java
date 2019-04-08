@@ -3,97 +3,94 @@ package GUI;
 import java.awt.Button;
 import java.awt.Dialog;
 import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.event.*;
 import javax.swing.*;
 
 import Run.User;
 
 class register{
-
-
 	public register(User U) {
-		JFrame f = new JFrame("×¢²á");
-		 JPasswordField value = new JPasswordField();
-       value.setBounds(100, 100, 100, 30);
+	   JFrame register = new JFrame("æ³¨å†Œ");
+	   register.setSize(450, 300);
+	   register.setLocationRelativeTo(null);
+	   register.setLayout(null); 
+	   register.setResizable(false);
+	   register.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+	   
+	   register.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+	   register.addWindowListener(new WindowAdapter() {
+       public void windowClosing(WindowEvent e) {
+    	   register.dispose();
+       	new login(U);
+       }
+       });
+	   //æ–‡å­—
+       JLabel ID = new JLabel("è´¦å·:");
+       ID.setBounds(20, 20, 80, 30);
+       ID.setFont(new Font("æ¥·ä½“",Font.BOLD,20));
+       JTextField ID_value = new JTextField();
+       ID_value.setBounds(100, 20, 100, 30);
        
-       JLabel l1 = new JLabel("ÕËºÅ:");
-       l1.setBounds(20, 20, 80, 30);
-       JTextField text1 = new JTextField();
-       text1.setBounds(100, 20, 100, 30);
+       JLabel username = new JLabel("ç”¨æˆ·å:");
+       username.setBounds(20, 60, 80, 30);
+       username.setFont(new Font("æ¥·ä½“",Font.BOLD,20));
+       JTextField username_value = new JTextField();
+       username_value.setBounds(100,60, 100, 30);
        
-       JLabel l2 = new JLabel("ÓÃ»§Ãû:");
-       l2.setBounds(20, 60, 80, 30);
-       JTextField text2 = new JTextField();
-       text2.setBounds(100,60, 100, 30);
+       JLabel psw = new JLabel("å¯†ç :");
+       psw.setBounds(20, 100, 80, 30);
+       psw.setFont(new Font("æ¥·ä½“",Font.BOLD,20));
+	   JPasswordField psw_value = new JPasswordField();
+       psw_value.setBounds(100, 100, 100, 30);
        
-       JLabel l3 = new JLabel("ÃÜÂë:");
-       l3.setBounds(20, 100, 80, 30);
+       //æŒ‰é’®
+       JButton register_but = new JButton("æ³¨å†Œ");
+       register_but.setBounds(150, 150, 100, 50);
+       register_but.setFont(new Font("æ¥·ä½“",Font.BOLD,15));
+       JLabel ID_limit = new JLabel("è´¦å·åŒ…å«æ•°å­—ä¸å­—æ¯ï¼Œä¸”ä¸è¶…è¿‡10ä½");
+       ID_limit.setFont(new Font("æ¥·ä½“",Font.BOLD,13));
+       ID_limit.setBounds(200, 20, 300, 30);
+       JLabel username_limit = new JLabel("ç”¨æˆ·åä¸èƒ½å¤§äº8ä½");
+       username_limit.setFont(new Font("æ¥·ä½“",Font.BOLD,13));
+       username_limit.setBounds(200, 60, 300, 30);
+       JLabel psw_limit = new JLabel("å¯†ç åŒ…å«æ•°å­—ä¸å­—æ¯ï¼Œä¸”ä¸è¶…è¿‡10ä½");
+       psw_limit.setFont(new Font("æ¥·ä½“",Font.BOLD,13));
+       psw_limit.setBounds(200, 100, 300, 30);
        
-       JButton c = new JButton("×¢²á");
-       c.setBounds(100, 150, 80, 30);
-       JLabel s1 = new JLabel("ÕËºÅÒªÇó:");
-       s1.setBounds(200, 20, 80, 30);
-       JLabel s2 = new JLabel("ÓÃ»§ÃûÒªÇó:");
-       s2.setBounds(200, 60, 80, 30);
-       JLabel s3 = new JLabel("ÃÜÂëÒªÇó:");
-       s3.setBounds(200, 100, 80, 30);
-       
-       Dialog  d = new Dialog(f, "ÌáÊ¾", true);
-       d.setBounds(400, 200, 350, 150);
-       d.setLayout(new FlowLayout());
-       Button ok = new Button("È·¶¨");
-       d.setLocationRelativeTo(null);
-       JLabel l4 = new JLabel();
-       d.add(l4);
-       
-       f.add(s1);
-       f.add(s2);
-       f.add(s3);
-       
-     f.add(value);
-     f.add(l1);
-     f.add(l2);
-     f.add(l3);
-     f.add(c);
-     f.add(text1);
-     f.add(text2);
-     f.setSize(300, 300);
-     f.setLocationRelativeTo(null);//ÏÔÊ¾ÆÁÄ»ÖĞÑë
-     f.setLayout(null);
-     f.setVisible(true);
+       register.add(ID_limit);
+       register.add(username_limit);
+       register.add(psw_limit);
+       register.add(psw_value);
+       register.add(ID);
+       register.add(username);
+       register.add(psw);
+       register.add(register_but);
+       register.add(ID_value);
+       register.add(username_value);
+
+       register.setVisible(true);
  
-     
-     c.addActionListener(new ActionListener() {
+     //æ³¨å†ŒæŒ‰é’®
+       register_but.addActionListener(new ActionListener() {
        public void actionPerformed(ActionEvent e) {
-           String ID =text1.getText();
-           String username =text2.getText();
-           String psw=new String(value.getPassword());
-           U.setUser(ID, username, psw);
-           String Info=U.SignUp();
+           String ID =ID_value.getText();
+           String username =username_value.getText();
+           String psw=new String(psw_value.getPassword());
+           String Info=U.SignUp(ID,psw,username);
            if(Info.equals("true"))
            {
-        	   System.out.println("×¢²á³É¹¦");
+        	   new JOptionPane().showMessageDialog(null, "æ³¨å†ŒæˆåŠŸ", "æç¤º", JOptionPane.INFORMATION_MESSAGE);
+               register.dispose();
+               new login(U);
            }
            else
            {
-        	l4.setText(Info);
-           	d.setVisible(true);
+           new JOptionPane().showMessageDialog(null, Info, "è­¦å‘Š", JOptionPane.WARNING_MESSAGE);
            	return;
-           }
-        	   
+           }   
        }
    });
-     // È·¶¨°´Å¥¼àÌıÆ÷
-     ok.addActionListener(new ActionListener() {
-         public void actionPerformed(ActionEvent e) {
-             d.setVisible(false);
-         }
-     });
-     //X°´Å¥¼àÌıÆ÷
-     d.addWindowListener(new WindowAdapter() {
-         public void windowClosing(WindowEvent e) {
-             d.setVisible(false);//ÉèÖÃ¶Ô»°¿ò²»¿É¼û
     
-         }});
 	}
 }

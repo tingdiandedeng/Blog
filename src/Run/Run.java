@@ -1,20 +1,21 @@
 package Run;
-import java.sql.Connection;
-import java.sql.Timestamp;
-import java.util.Date;
 
-import org.apache.commons.codec.digest.DigestUtils;
 
-import ConnectDB.*;
+import javax.swing.UIManager;
+
 import GUI.login;
 
 public class Run {
 
 	public static void main(String[] args) throws Exception {
+		try {
+			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+			} catch (Exception e) {
+			e.printStackTrace();
+			}
 		User user=new User();
 		new login(user);
-//		int f=DB.PostBlog("0001", "001", "hahhahhaha", DB.getConnect());
-//		System.out.println(f);
+		
 	}
 
 }

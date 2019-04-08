@@ -1,78 +1,237 @@
 package Run;
 
 import java.sql.Connection;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.regex.Pattern;
 
 import org.apache.commons.codec.digest.DigestUtils;
 
 import ConnectDB.DB;
 
-//UserÀà£¬´æ´¢ÓÃ»§»ù±¾ĞÅÏ¢£¬²¢¶¨Òå»ù±¾·½·¨
+//Userç±»ï¼Œå­˜å‚¨ç”¨æˆ·åŸºæœ¬ä¿¡æ¯ï¼Œå¹¶å®šä¹‰åŸºæœ¬æ–¹æ³•
 public class User{
 	private String UID;
 	private String Uname;
-	private String Psw;
 	
-	//×¢²áÊ±»ñÈ¡ĞÅÏ¢
-	public void setUser(String id,String name,String psw) {
-		this.UID=id;this.Psw=psw;this.Uname=name;
+	@Override
+	public String toString() {
+		return "User [UID=" + UID + ", Uname=" + Uname + "]";
+	}
+
+	public String getUID() {
+		return UID;
+	}
+
+	public String getUname() {
+		return Uname;
+	}
+
+	//å­˜å‚¨ç”¨æˆ·ID,è·å–æ˜µç§°å¹¶å­˜å‚¨
+	public void setUser(String id) {
+		Connection con;
+		try {
+			con = DB.getConnect();
+			this.UID=id;this.Uname=DB.getUname(id, con);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 	}
 	
-	//µÇÂ¼Ê±»ñÈ¡ĞÅÏ¢
-	public void setUser(String id,String psw) {
-		this.UID=id;this.Psw=psw;
-	}
-	
-	//µÇÂ¼ÑéÖ¤·½·¨£¬³É¹¦·µ»Øtrue£¬·ñÔò·µ»Ø´íÎóĞÅÏ¢
-	public String Login() {
+	//ç™»å½•éªŒè¯æ–¹æ³•ï¼ŒæˆåŠŸè¿”å›trueï¼Œå¦åˆ™è¿”å›é”™è¯¯ä¿¡æ¯
+	public String Login(String UID,String Psw) {
 		String Info=null;
 		try {
 			if(UID.length()==0||Psw.length()==0)
-				Info = "ÕËºÅ»òÃÜÂë²»ÄÜÎª¿Õ!";
+				Info = "è´¦å·æˆ–å¯†ç ä¸èƒ½ä¸ºç©º!";
 			else {
 				Connection DBConnection = DB.getConnect();
 				String Hpsw=DB.getHpsw(UID, DBConnection);
 				if(Hpsw==null)
-					Info = "ÕËºÅ»òÃÜÂë´íÎó£¡";
+					Info = "è´¦å·æˆ–å¯†ç é”™è¯¯ï¼";
 				else {
 					String hpsw=DigestUtils.md5Hex(Psw);
-					if(hpsw.equals(Hpsw))
+					if(hpsw.equals(Hpsw)){
 						Info = "true";
+						setUser(UID);
+						}
 					else
-						Info ="ÕËºÅ»òÃÜÂë´íÎó£¡";
+						Info ="è´¦å·æˆ–å¯†ç é”™è¯¯ï¼";
 				}
 				DBConnection.close();
 			}
 		} catch (Exception e) {
-			Info = "Êı¾İ¿âÁ¬½ÓÊ§°Ü";
+			e.printStackTrace();
 		}
 		return Info;
 	}
 	
-	//×¢²á·½·¨£¬³É¹¦·µ»Øtrue£¬·ñÔò·µ»Ø´íÎóĞÅÏ¢
-	public String SignUp() {
+	//æ³¨å†Œæ–¹æ³•ï¼ŒæˆåŠŸè¿”å›trueï¼Œå¦åˆ™è¿”å›é”™è¯¯ä¿¡æ¯
+	public String SignUp(String UID,String Psw,String Uname) {
 		String Info=null;
 		try {
 			if(UID.length()==0||Psw.length()==0||Uname.length()==0)
-				Info="×¢²áĞÅÏ¢²»ÄÜÎª¿Õ";
+				Info="æ³¨å†Œä¿¡æ¯ä¸èƒ½ä¸ºç©º";
 			else if(Pattern.matches("^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{1,10}$", UID)==false)
-				Info= "ÕËºÅ°üº¬Êı×ÖÓë×ÖÄ¸£¬ÇÒ²»³¬¹ı10Î»";
+				Info= "è´¦å·æœ‰ä¸”ä»…æœ‰æ•°å­—ä¸å­—æ¯ï¼Œä¸”ä¸è¶…è¿‡10ä½";
 			else if(Uname.length()>8)
-				Info= "ÓÃ»§Ãû²»ÄÜ´óÓÚ8Î»";
+				Info= "ç”¨æˆ·æ˜µç§°ä¸èƒ½å¤§äº8ä½";
 			else if(Pattern.matches("^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{1,10}$", Psw)==false)
-				Info= "ÃÜÂë°üº¬Êı×ÖÓë×ÖÄ¸£¬ÇÒ²»³¬¹ı10Î»";
+				Info= "å¯†ç æœ‰ä¸”ä»…æœ‰æ•°å­—ä¸å­—æ¯ï¼Œä¸”ä¸è¶…è¿‡10ä½";
 			else{
 			Connection DBConnection = DB.getConnect();
 			int i=DB.SignUp(UID, Uname, Psw, DBConnection);
 			if(i==0)
-				Info="×¢²áÊ§°Ü";
+				Info="å·²å­˜åœ¨è¯¥ç”¨æˆ·ï¼Œè¯·æ›´æ¢è´¦å·";
 			else
 				Info="true";
 			DBConnection.close();
 			}
 		} catch (Exception e) {
-			Info= "Êı¾İ¿âÁ¬½ÓÊ§°Ü";
+			e.printStackTrace();
 		}
 		return Info;
 	}
+
+	//åšå®¢å‘è¡¨æ–¹æ³•ï¼Œè¿”å›é”™è¯¯ä¿¡æ¯
+	public String PostBlog(String Blog) {
+		String Info=null;
+		if(Blog.length()>500)
+			Info="å½“å‰å­—æ•°ä¸º:"+Blog.length()+",åšå®¢å­—æ•°ä¸èƒ½å¤§äº500ï¼Œè¯·ç¼–è¾‘åé‡è¯•ï¼";
+		else if(Blog.length()==0)
+			Info="è¯·è¾“å…¥å†…å®¹ï¼";
+		else
+		{
+			Connection connection;
+			try {
+				connection = DB.getConnect();
+				if(DB.PostBlog(this.UID, Blog, new Date(), connection)==1)
+					Info="å‘è¡¨æˆåŠŸï¼";
+				else
+					Info="å‘è¡¨å¤±è´¥ï¼";
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		
+		}
+		return Info;
+	}
+	
+	//è·å–æ‰€æœ‰åšå®¢å†…å®¹ï¼Œè¿”å›åšå®¢æ¡æ•°
+	public int getAllBlogs(ArrayList<Blog> Blogs) {
+		int i=0;
+		try {
+			Connection connection = DB.getConnect();
+			i=DB.getBlog(null, Blogs, connection);
+			connection.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return i;
+	}
+	
+	
+	public String getOtherBlogs(String UID,ArrayList<Blog> Blogs) {
+		String Info=null;
+		if(UID.equals("è¾“å…¥ç”¨æˆ·ID"))
+			Info="è¯·è¾“å…¥ä½ è¦æŸ¥è¯¢çš„ç”¨æˆ·IDï¼";
+		else {
+			try {
+				Connection connection = DB.getConnect();
+				if(DB.isExistUser(UID, connection)==0)
+					Info="æœªæ‰¾åˆ°è¯¥ç”¨æˆ·";
+				else if(DB.getBlog(UID, Blogs, connection)==0)
+					Info="è¯¥ç”¨æˆ·å°šæœªå‘è¡¨åšå®¢";
+				else
+				{}
+				connection.close();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		
+		return Info;
+		
+	}
+	
+	
+	public String getOwnBlogs(ArrayList<Blog> Blogs) {
+		try {
+			Connection connection = DB.getConnect();
+			if(DB.getBlog(this.UID, Blogs, connection)==0) {
+				return "ä½ è¿˜æ²¡æœ‰åšå®¢è®°å½•ï¼Œå‘è¡¨ä¸€æ¡è¯•è¯•å§ï¼";
+			}
+			connection.close();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	
+	public String Like(String BID) {
+		String Info=null;
+		try {
+			Connection connection=DB.getConnect();
+			int i=DB.Like(BID, this.UID,connection);
+			if(i==1)
+				Info="å–æ¶ˆç‚¹èµæˆåŠŸ";
+			else if(i==2)
+				Info="ç‚¹èµæˆåŠŸ";
+			else
+				Info="ä¸å¯é¢„çŸ¥é”™è¯¯";
+			connection.close();
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return Info;
+	}
+	//åˆ é™¤åšå®¢
+		public String deleteBlog(String BID) {
+			String Info=null;
+			try {
+				Connection connection = DB.getConnect();
+				if(DB.DeleteBlog(BID, connection)!=0) {
+					return "åˆ é™¤æˆåŠŸï¼";
+				}
+				else
+					Info="æ— æ³•é¢„çŸ¥çš„é”™è¯¯ï¼";
+				connection.close();
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			return Info;
+		}
+		//å›å¤åŠŸèƒ½
+		public String Reply(String BID,String fromUID,String toUID,String Content) {
+			String Info=null;
+			if(Content.length()>100)
+				Info="å†…å®¹ä¸èƒ½å¤§äº100å­—ï¼Œè¯·ä¿®æ”¹åé‡è¯•";
+			else if(Content.length()==0)
+				Info="è¯·è¾“å…¥å†…å®¹ï¼";
+			else {
+			try {
+				Connection connection = DB.getConnect();
+				if(DB.setReply(BID, fromUID, toUID, Content, new Date(), connection)==1) {
+					if(toUID==null)
+						Info= "è¯„è®ºæˆåŠŸï¼";
+					else
+						Info="å›å¤æˆåŠŸï¼";
+				}
+				else
+					Info="æ— æ³•é¢„çŸ¥çš„é”™è¯¯ï¼";
+				connection.close();
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			}
+			return Info;
+		}
+
+
 }
